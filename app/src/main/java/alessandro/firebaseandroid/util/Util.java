@@ -14,7 +14,9 @@ import java.util.Date;
  */
 public class Util {
 
-    public static final String URL_STORAGE_REFERENCE = "gs://alefirebase-b6a81.appspot.com";
+//    public static final String URL_STORAGE_REFERENCE = "gs://alefirebase-b6a81.appspot.com";
+    public static final String URL_STORAGE_REFERENCE = "https://kbms-bot.firebaseio.com/";
+
     public static final String FOLDER_STORAGE_IMG = "images";
 
     public static void initToast(Context c, String message){

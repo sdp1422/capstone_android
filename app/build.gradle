@@ -49,5 +49,9 @@ dependencies {
     //Places SERVICES
     compile 'com.google.android.gms:play-services-places:9.2.0'
 
+    //AI
+    compile 'ai.api:libai:1.2.2'
+    compile 'ai.api:sdk:2.0.1@aar'
+
 }
 apply plugin: 'com.google.gms.google-services'

@@ -3,6 +3,7 @@ package alessandro.firebaseandroid;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -41,6 +42,15 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 
+import ai.api.AIDataService;
+import ai.api.AIListener;
+import ai.api.AIServiceException;
+import ai.api.android.AIConfiguration;
+import ai.api.android.AIService;
+import ai.api.model.AIError;
+import ai.api.model.AIRequest;
+import ai.api.model.AIResponse;
+import ai.api.model.Result;
 import alessandro.firebaseandroid.adapter.ChatFirebaseAdapter;
 import alessandro.firebaseandroid.adapter.ClickListenerChatFirebase;
 import alessandro.firebaseandroid.model.ChatModel;
@@ -53,7 +63,8 @@ import alessandro.firebaseandroid.view.LoginActivity;
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
 import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener, ClickListenerChatFirebase {
+
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener, ClickListenerChatFirebase, AIListener {
 
     private static final int IMAGE_GALLERY_REQUEST = 1;
     private static final int IMAGE_CAMERA_REQUEST = 2;
@@ -71,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     //CLass Model
     private UserModel userModel;
+    private UserModel botModel;
 
     //Views UI
     private RecyclerView rvListMessage;
@@ -90,6 +102,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
+    private AIService aiService;
+
+    AIDataService aiDataService;
+
+    AIRequest aiRequest;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +124,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     .addApi(Auth.GOOGLE_SIGN_IN_API)
                     .build();
         }
+
+        final AIConfiguration config = new AIConfiguration("44dda6fec85d45fc877d465c781d3e0e",
+                AIConfiguration.SupportedLanguages.English,
+                AIConfiguration.RecognitionEngine.System);
+
+        aiService = AIService.getService(this, config);
+        aiService.setListener(this);
+
+        aiDataService = new AIDataService(config);
+
+        aiRequest = new AIRequest();
     }
 
     @Override
@@ -307,9 +336,64 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
      * Enviar msg de texto simples para chat
      */
     private void sendMessageFirebase(){
-        ChatModel model = new ChatModel(userModel,edMessage.getText().toString(), Calendar.getInstance().getTime().getTime()+"",null);
-        mFirebaseDatabaseReference.child(CHAT_REFERENCE).push().setValue(model);
+
+        /*
+        ddd
+        */
+//        String message = editText.getText().toString().trim();
+        String message = edMessage.getText().toString();
+
+        if (!message.equals("")) {
+
+//            ChatMessage chatMessage = new ChatMessage(message, "user");
+//            ref.child("chat").push().setValue(chatMessage);
+
+            ChatModel model0 = new ChatModel(userModel, message, Calendar.getInstance().getTime().getTime()+"",null);
+            mFirebaseDatabaseReference.child(CHAT_REFERENCE).push().setValue(model0);
+
+            aiRequest.setQuery(message);
+            new AsyncTask<AIRequest,Void,AIResponse>(){
+
+                @Override
+                protected AIResponse doInBackground(AIRequest... aiRequests) {
+                    final AIRequest request = aiRequests[0];
+                    try {
+                        final AIResponse response = aiDataService.request(aiRequest);
+                        return response;
+                    } catch (AIServiceException e) {
+                    }
+                    return null;
+                }
+                @Override
+                protected void onPostExecute(AIResponse response) {
+                    if (response != null) {
+
+                        Result result = response.getResult();
+                        String reply = result.getFulfillment().getSpeech();
+//                        ChatMessage chatMessage = new ChatMessage(reply, "bot");
+//                        ref.child("chat").push().setValue(chatMessage);
+
+                        botModel = new UserModel("bot", "none", "0" );
+                        ChatModel model = new ChatModel(botModel, reply, Calendar.getInstance().getTime().getTime()+"",null);
+                        mFirebaseDatabaseReference.child(CHAT_REFERENCE).push().setValue(model);
+
+                    }
+                }
+            }.execute(aiRequest);
+        }
+        else {
+            aiService.startListening();
+        }
+
+//
+//        editText.setText("");
+
         edMessage.setText(null);
+
+
+//        ChatModel model = new ChatModel(userModel,edMessage.getText().toString(), Calendar.getInstance().getTime().getTime()+"",null);
+//        mFirebaseDatabaseReference.child(CHAT_REFERENCE).push().setValue(model);
+//        edMessage.setText(null);
     }
 
     /**
@@ -412,5 +496,51 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 }
                 break;
         }
+    }
+
+    @Override
+    public void onResult(AIResponse response) {
+        Result result = response.getResult();
+
+        String message = result.getResolvedQuery();
+
+        ChatModel model0 = new ChatModel(userModel, message, Calendar.getInstance().getTime().getTime()+"",null);
+        mFirebaseDatabaseReference.child(CHAT_REFERENCE).push().setValue(model0);
+
+//        ChatMessage chatMessage0 = new ChatMessage(message, "user");
+//        ref.child("chat").push().setValue(chatMessage0);
+
+
+        String reply = result.getFulfillment().getSpeech();
+//        ChatMessage chatMessage = new ChatMessage(reply, "bot");
+//        ref.child("chat").push().setValue(chatMessage);
+        botModel = new UserModel("bot", "none", "0" );
+        ChatModel model = new ChatModel(botModel, reply, Calendar.getInstance().getTime().getTime()+"",null);
+        mFirebaseDatabaseReference.child(CHAT_REFERENCE).push().setValue(model);
+    }
+
+    @Override
+    public void onError(AIError error) {
+
+    }
+
+    @Override
+    public void onAudioLevel(float level) {
+
+    }
+
+    @Override
+    public void onListeningStarted() {
+
+    }
+
+    @Override
+    public void onListeningCanceled() {
+
+    }
+
+    @Override
+    public void onListeningFinished() {
+
     }
 }
