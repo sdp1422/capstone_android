@@ -373,7 +373,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 //                        ChatMessage chatMessage = new ChatMessage(reply, "bot");
 //                        ref.child("chat").push().setValue(chatMessage);
 
-                        botModel = new UserModel("bot", "none", "0" );
+                        botModel = new UserModel("bot", "none", "null" );
                         ChatModel model = new ChatModel(botModel, reply, Calendar.getInstance().getTime().getTime()+"",null);
                         mFirebaseDatabaseReference.child(CHAT_REFERENCE).push().setValue(model);
 
@@ -430,6 +430,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             finish();
         }else{
             userModel = new UserModel(mFirebaseUser.getDisplayName(), mFirebaseUser.getPhotoUrl().toString(), mFirebaseUser.getUid() );
+            Log.d("Tag", mFirebaseUser.getDisplayName());
+            Log.d("Tag", mFirebaseUser.getPhotoUrl().toString());
+            Log.d("Tag", mFirebaseUser.getUid());
+            lerMessagensFirebase();
+
+
+            botModel = new UserModel("봇", "profile_none", "0" );
             lerMessagensFirebase();
         }
     }
@@ -486,7 +493,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
-        switch (requestCode){
+            switch (requestCode){
             case REQUEST_EXTERNAL_STORAGE:
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
@@ -514,7 +521,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         String reply = result.getFulfillment().getSpeech();
 //        ChatMessage chatMessage = new ChatMessage(reply, "bot");
 //        ref.child("chat").push().setValue(chatMessage);
+
         botModel = new UserModel("bot", "none", "0" );
+//        ChatModel model = new ChatModel(u, reply, Calendar.getInstance().getTime().getTime()+"",null);
         ChatModel model = new ChatModel(botModel, reply, Calendar.getInstance().getTime().getTime()+"",null);
         mFirebaseDatabaseReference.child(CHAT_REFERENCE).push().setValue(model);
     }
