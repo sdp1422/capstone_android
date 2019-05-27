@@ -168,7 +168,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     LatLng latLng = place.getLatLng();
                     MapModel mapModel = new MapModel(latLng.latitude+"",latLng.longitude+"");
                     ChatModel chatModel = new ChatModel(userModel,Calendar.getInstance().getTime().getTime()+"",mapModel);
-                    mFirebaseDatabaseReference.child(CHAT_REFERENCE).push().setValue(chatModel);
+//                    mFirebaseDatabaseReference.child(CHAT_REFERENCE).push().setValue(chatModel);
+                    mFirebaseDatabaseReference.child(CHAT_REFERENCE).child(mFirebaseAuth.getCurrentUser().getUid()).push().setValue(chatModel);
                 }else{
                     //PLACE IS NULL
                 }
@@ -258,7 +259,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
                         FileModel fileModel = new FileModel("img",downloadUrl.toString(),name,"");
                         ChatModel chatModel = new ChatModel(userModel,"",Calendar.getInstance().getTime().getTime()+"",fileModel);
-                        mFirebaseDatabaseReference.child(CHAT_REFERENCE).push().setValue(chatModel);
+//                        mFirebaseDatabaseReference.child(CHAT_REFERENCE).push().setValue(chatModel);
+                        mFirebaseDatabaseReference.child(CHAT_REFERENCE).child(mFirebaseAuth.getCurrentUser().getUid()).push().setValue(chatModel);
                     }
                 });
         }else{
@@ -288,7 +290,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
                     FileModel fileModel = new FileModel("img",downloadUrl.toString(),file.getName(),file.length()+"");
                     ChatModel chatModel = new ChatModel(userModel,"",Calendar.getInstance().getTime().getTime()+"",fileModel);
-                    mFirebaseDatabaseReference.child(CHAT_REFERENCE).push().setValue(chatModel);
+//                    mFirebaseDatabaseReference.child(CHAT_REFERENCE).push().setValue(chatModel);
+                    mFirebaseDatabaseReference.child(CHAT_REFERENCE).child(mFirebaseAuth.getCurrentUser().getUid()).push().setValue(chatModel);
                 }
             });
         }else{
@@ -350,7 +353,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 //            ref.child("chat").push().setValue(chatMessage);
 
             ChatModel model0 = new ChatModel(userModel, message, Calendar.getInstance().getTime().getTime()+"",null);
-            mFirebaseDatabaseReference.child(CHAT_REFERENCE).push().setValue(model0);
+//            mFirebaseDatabaseReference.child(CHAT_REFERENCE).push().setValue(model0);
+            mFirebaseDatabaseReference.child(CHAT_REFERENCE).child(mFirebaseAuth.getCurrentUser().getUid()).push().setValue(model0);
 
             aiRequest.setQuery(message);
             new AsyncTask<AIRequest,Void,AIResponse>(){
@@ -377,7 +381,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 //                        botModel = new UserModel("bot", "none", "0" );
                         botModel = new UserModel("sangdon park", "https://lh5.googleusercontent.com/-t-AkPxrxMCY/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3rdCRC4c6be0iIimK1BniTfkSkvGYQ/s96-c/photo.jpg", "tdANSqXd5IV87HN2SCr9VBBb62I3" );
                         ChatModel model = new ChatModel(botModel, reply, Calendar.getInstance().getTime().getTime()+"",null);
-                        mFirebaseDatabaseReference.child(CHAT_REFERENCE).push().setValue(model);
+//                        mFirebaseDatabaseReference.child(CHAT_REFERENCE).push().setValue(model);
+                        mFirebaseDatabaseReference.child(CHAT_REFERENCE).child(mFirebaseAuth.getCurrentUser().getUid()).push().setValue(model);
 
                     }
                 }
@@ -403,7 +408,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
      */
     private void lerMessagensFirebase(){
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        final ChatFirebaseAdapter firebaseAdapter = new ChatFirebaseAdapter(mFirebaseDatabaseReference.child(CHAT_REFERENCE),userModel.getName(),this);
+//        final ChatFirebaseAdapter firebaseAdapter = new ChatFirebaseAdapter(mFirebaseDatabaseReference.child(CHAT_REFERENCE),userModel.getName(),this);
+//        mFirebaseDatabaseReference.child(CHAT_REFERENCE).child(mFirebaseAuth.getCurrentUser().getUid()).push().setValue(model0);
+        final ChatFirebaseAdapter firebaseAdapter = new ChatFirebaseAdapter(mFirebaseDatabaseReference.child(CHAT_REFERENCE).child(mFirebaseAuth.getCurrentUser().getUid()),userModel.getName(),this);
         firebaseAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
@@ -513,7 +520,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         String message = result.getResolvedQuery();
 
         ChatModel model0 = new ChatModel(userModel, message, Calendar.getInstance().getTime().getTime()+"",null);
-        mFirebaseDatabaseReference.child(CHAT_REFERENCE).push().setValue(model0);
+//        mFirebaseDatabaseReference.child(CHAT_REFERENCE).push().setValue(model0);
+        mFirebaseDatabaseReference.child(CHAT_REFERENCE).child(mFirebaseAuth.getCurrentUser().getUid()).push().setValue(model0);
 
 //        ChatMessage chatMessage0 = new ChatMessage(message, "user");
 //        ref.child("chat").push().setValue(chatMessage0);
@@ -527,7 +535,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         botModel = new UserModel("sangdon park", "https://lh5.googleusercontent.com/-t-AkPxrxMCY/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3rdCRC4c6be0iIimK1BniTfkSkvGYQ/s96-c/photo.jpg", "tdANSqXd5IV87HN2SCr9VBBb62I3" );
 //        ChatModel model = new ChatModel(u, reply, Calendar.getInstance().getTime().getTime()+"",null);
         ChatModel model = new ChatModel(botModel, reply, Calendar.getInstance().getTime().getTime()+"",null);
-        mFirebaseDatabaseReference.child(CHAT_REFERENCE).push().setValue(model);
+//        mFirebaseDatabaseReference.child(CHAT_REFERENCE).push().setValue(model);
+        mFirebaseDatabaseReference.child(CHAT_REFERENCE).child(mFirebaseAuth.getCurrentUser().getUid()).push().setValue(model);
     }
 
     @Override
