@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     private AIService aiService;
 
+
     AIDataService aiDataService;
 
     AIRequest aiRequest;
@@ -373,7 +374,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 //                        ChatMessage chatMessage = new ChatMessage(reply, "bot");
 //                        ref.child("chat").push().setValue(chatMessage);
 
-                        botModel = new UserModel("bot", "none", "null" );
+//                        botModel = new UserModel("bot", "none", "0" );
+                        botModel = new UserModel("sangdon park", "https://lh5.googleusercontent.com/-t-AkPxrxMCY/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3rdCRC4c6be0iIimK1BniTfkSkvGYQ/s96-c/photo.jpg", "tdANSqXd5IV87HN2SCr9VBBb62I3" );
                         ChatModel model = new ChatModel(botModel, reply, Calendar.getInstance().getTime().getTime()+"",null);
                         mFirebaseDatabaseReference.child(CHAT_REFERENCE).push().setValue(model);
 
@@ -436,8 +438,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             lerMessagensFirebase();
 
 
-            botModel = new UserModel("봇", "profile_none", "0" );
-            lerMessagensFirebase();
+            botModel = new UserModel("sangdon park", "https://lh5.googleusercontent.com/-t-AkPxrxMCY/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3rdCRC4c6be0iIimK1BniTfkSkvGYQ/s96-c/photo.jpg", "tdANSqXd5IV87HN2SCr9VBBb62I3" );
         }
     }
 
@@ -522,7 +523,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 //        ChatMessage chatMessage = new ChatMessage(reply, "bot");
 //        ref.child("chat").push().setValue(chatMessage);
 
-        botModel = new UserModel("bot", "none", "0" );
+//        botModel = new UserModel("bot", "none", "0" );
+        botModel = new UserModel("sangdon park", "https://lh5.googleusercontent.com/-t-AkPxrxMCY/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3rdCRC4c6be0iIimK1BniTfkSkvGYQ/s96-c/photo.jpg", "tdANSqXd5IV87HN2SCr9VBBb62I3" );
 //        ChatModel model = new ChatModel(u, reply, Calendar.getInstance().getTime().getTime()+"",null);
         ChatModel model = new ChatModel(botModel, reply, Calendar.getInstance().getTime().getTime()+"",null);
         mFirebaseDatabaseReference.child(CHAT_REFERENCE).push().setValue(model);
