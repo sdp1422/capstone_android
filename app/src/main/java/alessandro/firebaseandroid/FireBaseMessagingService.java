@@ -28,6 +28,7 @@ public class FireBaseMessagingService extends FirebaseMessagingService {
 
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
+        // firebase cloud messaging에서 메세지를 보낼 경우 Logcat에서 android clinet token을 확인 가능하도록 추가하였음
         String token = FirebaseInstanceId.getInstance().getToken();
         Log.d(TAG, token);
 
