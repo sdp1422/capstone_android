@@ -15,6 +15,8 @@ import android.support.v4.app.NotificationCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 public class FireBaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = "MyFirebaseMsgService";
 
@@ -26,6 +28,8 @@ public class FireBaseMessagingService extends FirebaseMessagingService {
 
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
+        String token = FirebaseInstanceId.getInstance().getToken();
+        Log.d(TAG, token);
 
 
         if (remoteMessage.getData().size() > 0) {
