@@ -7,4 +7,6 @@
     <string name="api_key_google_places">AIzaSyBisbsq9wIW8Q2Isj033c3wXqtTBRyaRBA</string>
     <string name="sendLocation">Send Location</string>
     <string name="locationTo">Localização Enviada</string>
+    <string name="default_notification_channel_id">fcm_default_channel</string>
+    <string name="default_notification_channel_name">default_notification_channel_name</string>
 </resources>
